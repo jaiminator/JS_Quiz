@@ -18,24 +18,32 @@ function showQuestion() {
             questions[index].question +
             "</p><ul><li><input type='radio' name='option' id='option1' value='"+questions[index].answers[0]+"'/>" +
             questions[index].answers[0] +
-            "<li><input type='radio' name='option' id='option2' value='option2'/>" +
+            "<li><input type='radio' name='option' id='option2' value='"+questions[index].answers[1]+"'/>" +
             questions[index].answers[1] +
-            "<li><input type='radio' name='option' id='option3' value='option3'/>" +
+            "<li><input type='radio' name='option' id='option3' value='"+questions[index].answers[2]+"'/>" +
             questions[index].answers[2] +
-            "<li><input type='radio' name='option' id='option4' value='option4'/>" +
+            "<li><input type='radio' name='option' id='option4' value='"+questions[index].answers[3]+"'/>" +
             questions[index].answers[3] +
-            "<br><br><button onclick='getRadioValue()'>NEXT</button>";
+            "<br><br><button onclick='getRadioValue(questions)'>NEXT</button>";
 
-        index++;
+        
     }
 }
 
-function getRadioValue() {
-    const option1 = document.getElementById('option1');
-    const option2 = document.getElementById('option2');
-    const option3 = document.getElementById('option3');
-    const option4 = document.getElementById('option4');
+function getRadioValue(question) {
 
+    let activeOption = document.querySelector('input[name="option"]:checked').value;
+
+    console.log(question[index].correct_answer);
+
+    if(activeOption == question[index].correct_answer){
+        alert(activeOption);
+        alert('CORRECT!!');
+    } else {
+        alert('INCORRECT!!')
+    }
+
+    index++;
     showQuestion();
 }
 
@@ -50,13 +58,9 @@ async function getQuestions() {
             questionsBox.classList.add("hide");
             questionsBox.innerHTML = "";
             data.results.forEach((data) => {
-                /* console.log('QUESTION:',data); */
-                data.answers = [...data.incorrect_answers,data.correct_answer]
+                data.answers = [...data.incorrect_answers,data.correct_answer].sort();
                 questions.push(data);
-                /* questions.push(data.answers); */
-
-                //correctAnswers.push(data.correct_answer);
-                //incorrectAnswers.push(data.incorrect_answers);
+                /* console.log(questions); */
             });
             showQuestion();
         })
