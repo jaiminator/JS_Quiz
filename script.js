@@ -1,7 +1,7 @@
 //DECLARAMOS E ASIGNAMOS LAS VARIABLES INICIALES
 let questions = []; //lista de preguntas
 let index = 0;  //índice para cada pregunta a recorrer
-let indexAnswers = 0;   //índice para cada respuesta a recorrer
+let total_correct_answers = 0; //número total de respuestas correctas
 
 //OBTENEMOS EL BOTÓN Y LA CAJA DONDE PODER MOSTRAR LAS PREGUNTAS
 const spanQuestion = document.getElementById("spanQuestion");
@@ -24,21 +24,20 @@ function showQuestion() {
             questions[index].answers[2] +
             "<li><input type='radio' name='option' id='option4' value='"+questions[index].answers[3]+"'/>" +
             questions[index].answers[3] +
-            "<br><br><button onclick='getRadioValue(questions)'>NEXT</button>";
-
-        
+            "<br><br><button onclick='checkAnswer(questions)'>NEXT</button>";
+    } else {
+        // MUESTRA EL RESULTADO FINAL DEL QUIZ
+        questionsBox.innerHTML = "<h2>"+total_correct_answers+"/"+questions.length+" QUESTIONS ANSWERED CORRECTLY</h2>"
     }
 }
 
-function getRadioValue(question) {
+function checkAnswer(questions) {
 
     let activeOption = document.querySelector('input[name="option"]:checked').value;
 
-    console.log(question[index].correct_answer);
-
-    if(activeOption == question[index].correct_answer){
-        alert(activeOption);
+    if(activeOption == questions[index].correct_answer){
         alert('CORRECT!!');
+        total_correct_answers++;
     } else {
         alert('INCORRECT!!')
     }
@@ -51,16 +50,12 @@ function getRadioValue(question) {
 async function getQuestions() {
     questions = [];
     index = 0;
-    indexAnswers = 0;
-    await fetch("https://opentdb.com/api.php?amount=4&type=multiple")
+    await fetch("https://opentdb.com/api.php?amount=10&type=multiple")
         .then((res) => res.json())
         .then((data) => {
-            questionsBox.classList.add("hide");
-            questionsBox.innerHTML = "";
             data.results.forEach((data) => {
                 data.answers = [...data.incorrect_answers,data.correct_answer].sort();
                 questions.push(data);
-                /* console.log(questions); */
             });
             showQuestion();
         })
